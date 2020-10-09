@@ -135,34 +135,6 @@ while (line != None):
             currently_parsing = None
     if (currently_parsing != None):
         data = ENTITY_PARSING_BY_NAME[currently_parsing](data, line)
-    # if (currently_parsing == ARTIST):
-    #     data = handleArtistParsing(data, line)
-        # if (re.match(PATTERN_ARTIST_PEOPLE_PERSON_DATE_OF_BIRTH, line)):
-        #     data['artist'][found_id].date_of_birth = getDate(PATTERN_RETRIEVE_ARTIST_PEOPLE_PERSON_DATE_OF_BIRTH, line)
-        # elif (re.match(PATTERN_ARTIST_ACTIVE_START, line) or re.match(PATTERN_ARTIST_ACTIVE_END, line)):
-        #     data['artist'][found_id]['active_start' if re.match(PATTERN_ARTIST_ACTIVE_START, line) else 'active_end'] = getDate(PATTERN_RETRIEVE_ARTIST_ACTIVE_DATE,line)                
-        # elif (re.match(PATTERN_ARTIST_ORIGIN, line)):
-        #     data['artist'][found_id].origin = getObjectId(line)
-        # elif (re.match(PATTERN_ARTIST_GENRE, line)):
-        #     data['artist'][found_id].genre = getObjectId(line)
-        # elif (re.match(PATTERN_ARTIST_NAME, line)):
-        #     data['artist'][found_id].name = getName(line)
-        # elif (re.match(PATTERN_ARTIST_TRACK, line)):
-        #     track_id = getObjectId(line)
-        #     track, data = getOrCreate(data, TRACK, track_id)
-        #     data['artist'][found_id].tracks.append(track)
-        # elif (re.match(PATTERN_ARTIST_ALBUM, line)):
-        #     album_id = getObjectId(line)
-        #     album, data = getOrCreate(data, ALBUM, album_id)
-        #     data['artist'][found_id].albums.append(album)
-        # elif (re.match(PATTERN_ARTIST_ALBUM, line)):
-        #     album_id = getObjectId(line)
-        #     album, data = getOrCreate(data, ALBUM, album_id)
-        #     data['artist'][found_id].albums.append(album)
-        # elif (re.match(PATTERN_ARTIST_TRACK_CONTRIBUTION, line)):
-        #     contribution_id = getObjectId(line)
-        #     track_contribution, data = getOrCreate(data, TRACK_CONTRIBUTION, contribution_id)
-        #     data['artist'][found_id].track_contributions.append(track_contribution)
     if (line_counter % 100000 == 0):
         clear()
     line = f.readline()
