@@ -27,7 +27,7 @@ class Recording:
     length = int # <http://rdf.freebase.com/ns/music.recording.length> (v strede), v  pravo je potom value
     awards_won = [] # <http://rdf.freebase.com/ns/m.014brgq>  <http://rdf.freebase.com/ns/award.award_winning_work.awards_won>        <http://rdf.freebase.com/ns/m.0jzl1zk>
     awards_nominated = [] # <http://rdf.freebase.com/ns/m.014brgq>  <http://rdf.freebase.com/ns/award.award_nominated_work.award_nominations>      <http://rdf.freebase.com/ns/m.0k0c_tx>
-
+    description: str
     # song ??????? <http://rdf.freebase.com/ns/g.11b6t7wc6p>       <http://rdf.freebase.com/ns/music.recording.song>       <http://rdf.freebase.com/ns/m.05cmg8>
 # <http://rdf.freebase.com/ns/type.object.type>   <http://rdf.freebase.com/ns/music.release_track>
 
@@ -66,17 +66,18 @@ class Album:
 # <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>       <http://rdf.freebase.com/ns/music.artist>
 class Artist:
     name: str # <http://rdf.freebase.com/ns/g.12148s8q> <http://rdf.freebase.com/ns/type.object.name>   "Marco Berrini"@en      .
+    description: str
     active_start: str # <http://rdf.freebase.com/ns/music.artist.active_start>    "1990"^^<http://www.w3.org/2001/XMLSchema#gYear>
     active_end: str # <http://rdf.freebase.com/ns/music.artist.active_end>    "1990"^^<http://www.w3.org/2001/XMLSchema#gYear>
     origin: str # <http://rdf.freebase.com/ns/g.119pgq6k0>        <http://rdf.freebase.com/ns/music.artist.origin>        <http://rdf.freebase.com/ns/m.049d1>
     genre: str # <http://rdf.freebase.com/ns/g.119pgq6k0>        <http://rdf.freebase.com/ns/music.artist.genre> <http://rdf.freebase.com/ns/m.05m3yc>
     date_of_birth: str # <http://rdf.freebase.com/ns/g.12129y07> <http://rdf.freebase.com/ns/people.person.date_of_birth>        "1954-03-04"^^<http://www.w3.org/2001/XMLSchema#date>
 
-    tracks = [] # <http://rdf.freebase.com/ns/music.artist.track> (v strede), vpravo je potom ID
-    albums = [] # <http://rdf.freebase.com/ns/music.artist.album> (v strede), vpravo je potom ID
-    track_contributions = [] #<http://rdf.freebase.com/ns/g.112yfxf28>  <http://rdf.freebase.com/ns/music.artist.track_contributions>   <http://rdf.freebase.com/ns/m.01103pc7>
-    award_nominations = [] #<http://rdf.freebase.com/ns/g.11b6dv1czb>       <http://rdf.freebase.com/ns/award.award_nominee.award_nominations>     <http://rdf.freebase.com/ns/m.0_q_xky>
-    awards_won = [] # <http://rdf.freebase.com/ns/m.029dy9>	<http://rdf.freebase.com/ns/award.award_winner.awards_won>	<http://rdf.freebase.com/ns/m.0_r27zk>	.
+    tracks: [] # <http://rdf.freebase.com/ns/music.artist.track> (v strede), vpravo je potom ID
+    albums: [] # <http://rdf.freebase.com/ns/music.artist.album> (v strede), vpravo je potom ID
+    track_contributions: [] #<http://rdf.freebase.com/ns/g.112yfxf28>  <http://rdf.freebase.com/ns/music.artist.track_contributions>   <http://rdf.freebase.com/ns/m.01103pc7>
+    award_nominations: [] #<http://rdf.freebase.com/ns/g.11b6dv1czb>       <http://rdf.freebase.com/ns/award.award_nominee.award_nominations>     <http://rdf.freebase.com/ns/m.0_q_xky>
+    awards_won: [] # <http://rdf.freebase.com/ns/m.029dy9>	<http://rdf.freebase.com/ns/award.award_winner.awards_won>	<http://rdf.freebase.com/ns/m.0_r27zk>	.
 
     # music_group_members = [] # <http://rdf.freebase.com/ns/g.11b6dv1czb>       <http://rdf.freebase.com/ns/music.musical_group.member> <http://rdf.freebase.com/ns/m.0_q__qv>
 
@@ -92,22 +93,41 @@ class Artist:
         self.track_contributions = []
         self.award_nominations = []
         self.music_group_members = []
-
-class AwardNomination:
-    id: int
-    nomination_type: str
-    # artist: any
-
-    def __init__(self, id):
-        self.id = id
+        self.awards_won = []
 
 class Award:
     id: int
     name: str
-    detail_reference: str # <http://rdf.freebase.com/ns/award.award_honor.award>	<http://rdf.freebase.com/ns/m.0y7pmzv>
+    description: str
+    object_type: str
+    detail_object: any
 
     def __init__(self, id: int):
         self.id = id
+        self.object_type = ''
+        self.name = None
+        self.description = None
+        self.detail_object = None
+
+# class AwardNomination:
+#     id: int
+#     nomination_type: str
+#     # artist: any
+
+#     def __init__(self, id):
+#         self.id = id
+
+class Genre:
+    id: int
+    name: str
+    genre_type: str
+    
+    def __init__(self, id):
+        self.id = id
+        self.name = None # <http://rdf.freebase.com/ns/g.11b60s26zc>       <http://rdf.freebase.com/ns/common.notable_for.display_name>    "K-pop Artist"@en
+        self.genre_type = None # <http://rdf.freebase.com/ns/g.11b60s26zc>       <http://rdf.freebase.com/ns/common.notable_for.predicate>       "/music/artist/genre"
+
+
 
 # <http://rdf.freebase.com/ns/m.029dy9>	<http://rdf.freebase.com/ns/award.award_winner.awards_won>	<http://rdf.freebase.com/ns/m.0_r27zk>	.
 # <http://rdf.freebase.com/ns/m.0_r27zk>	<http://rdf.freebase.com/ns/award.award_honor.award>	<http://rdf.freebase.com/ns/m.0y7pmzv>	.
