@@ -3,6 +3,14 @@ from constants import ALBUM, ARTIST, AWARD, RECORDING, TRACK, TRACK_CONTRIBUTION
 from parsers import handleArtistParsing, handleAlbumParsing, handleRecordingParsing
 import re
 import json
+from json import JSONEncoder
+import jsonpickle
+
+def ComplexHandler(Obj):
+    if hasattr(Obj, 'jsonable'):
+        return Obj.jsonable()
+    else:
+        raise TypeError('Object of type %s with value of %s is not JSON serializable' % (type(Obj), repr(Obj)))
 
 def initializeDict():
     data = dict()
@@ -18,6 +26,6 @@ def initializeDict():
 def saveData(data):
     output_file = open(OUTPUT_FILE, 'w', encoding='utf-8')
     for key in data:
-        json.dump(data[key], output_file) 
-        output_file.write("\n")
+        jsonData = jsonpickle.encode(data[key], unpicklable=False)
+        output_file.write(f"{key}:{jsonData}\n")
     print ('Data saved')

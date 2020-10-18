@@ -5,7 +5,7 @@ import re
 
 from parsers import handleAlbumParsing, handleArtistParsing, handleAwardParsing, handleInitialParsing, handleRecordingParsing, handleSecondaryParsing, handleTertiaryParsing
 from constants import STATE, INITIAL_PARSING, SECONDARY_PARSING
-from helpers import initializeDict
+from helpers import initializeDict, saveData
 
 file = 'freebase-head-1000000'
 # file = 'freebase-head-100000000'
@@ -32,4 +32,5 @@ for i in range(3):
         if (line_counter % 100000 == 0):
             print(line_counter)
         line = f.readline()
-print('this is the end')
+print('the end of parsing')
+saveData(data)
