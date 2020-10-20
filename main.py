@@ -32,5 +32,6 @@ for i in range(3):
         if (line_counter % 100000 == 0):
             print(line_counter)
         line = f.readline()
+    f.close()
 print('the end of parsing')
 saveData(data)

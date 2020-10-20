@@ -28,4 +28,5 @@ def saveData(data):
     for key in data:
         jsonData = jsonpickle.encode(data[key], unpicklable=False)
         output_file.write(f"{key}:{jsonData}\n")
+    output_file.close()
     print ('Data saved')
