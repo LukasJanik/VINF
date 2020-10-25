@@ -17,7 +17,7 @@ TERTIARY_PARSING = 'tertiary_parsing'
 
 STATE = [INITIAL_PARSING, SECONDARY_PARSING, TERTIARY_PARSING]
 
-OUTPUT_FILE = 'output'
+OUTPUT_DIR = 'output'
 
 GENRE_MAPPER = {
     "/music/artist/genre": ARTIST,

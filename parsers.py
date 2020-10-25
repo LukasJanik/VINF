@@ -1,6 +1,6 @@
 from patterns import *
 from models import Artist, Track, Album, TrackContribution, Award, Genre
-from constants import ALBUM, ARTIST, AWARD, AWARD_INFO_TYPE_AWARD_WON, AWARD_INFO_TYPE_HONOR, TRACK, TRACK_CONTRIBUTION, RECORDING, GENRE, GENRE_MAPPER
+from constants import ALBUM, ARTIST, AWARD, AWARD_INFO_TYPE_AWARD_WON, AWARD_INFO_TYPE_HONOR, TRACK, TRACK_CONTRIBUTION, GENRE, GENRE_MAPPER
 import re
 
 def getSubjectId(input: str):
@@ -48,17 +48,17 @@ def handleArtistParsing(data, line: str, found_id: int):
         _data.origin = getObjectId(line)
     elif (re.match(PATTERN_ARTIST_GENRE, line)):
         genre, data = getOrCreate(data, GENRE, getObjectId(line))
-        _data.genre = genre
+        _data.genre = genre.id
     elif (re.match(PATTERN_OBJECT_NAME, line)):
         _data.name = getName(line)
     elif (re.match(PATTERN_OBJECT_DESCRIPTION, line)):
         _data.description = getDescription(line)        
     elif (re.match(PATTERN_ARTIST_TRACK, line)):
         track, data = getOrCreate(data, TRACK, getObjectId(line))
-        _data.tracks.append(track)
+        _data.tracks.append(track.id)
     elif (re.match(PATTERN_ARTIST_ALBUM, line)):
         album, data = getOrCreate(data, ALBUM, getObjectId(line))
-        _data.albums.append(album)
+        _data.albums.append(album.id)
     # elif (re.match(PATTERN_ARTIST_TRACK_CONTRIBUTION, line)):
     #     track_contribution, data = getOrCreate(data, TRACK_CONTRIBUTION, getObjectId(line))
     #     _data.track_contributions.append(track_contribution)
@@ -68,7 +68,7 @@ def handleArtistParsing(data, line: str, found_id: int):
     elif (re.match(PATTERN_ARTIST_AWARDS_WON, line)):
         award_won, data = getOrCreate(data, AWARD, getObjectId(line))
         award_won.object_type = AWARD_INFO_TYPE_AWARD_WON
-        _data.awards_won.append(award_won)
+        _data.awards_won.append(award_won.id)
     return data
 
 def handleTrackParsing(data, line: str, found_id: int):
@@ -80,7 +80,7 @@ def handleTrackParsing(data, line: str, found_id: int):
     elif (re.match(PATTERN_RECORDING_ARTIST, line)):
         artist, data = getOrCreate(data, ARTIST, getObjectId(line))
         # artist.tracks.append(_data)
-        _data.artists.append(artist)
+        _data.artists.append(artist.id)
     elif (re.match(PATTERN_RECORDING_LENGTH, line)):
         _data.length = getLength(PATTERN_RETRIEVE_RECORDING_LENGTH, line)
     # elif (re.match(PATTERN_AWARD_NOMINATED_WORK, line)):
@@ -97,8 +97,8 @@ def handleAlbumParsing(data, line: str, found_id: int):
         _data.description = getDescription(line)
     elif (re.match(PATTERN_ALBUM_ARTIST, line)):
         artist, data = getOrCreate(data, ARTIST, getObjectId(line))
-        artist.albums.append(_data)
-        _data.artists.append(artist)
+        artist.albums.append(found_id)
+        _data.artists.append(artist.id)
     elif (re.match(PATTERN_ALBUM_RELEASE_DATE, line)):
         _data.release_date = getDate(PATTERN_RETRIEVE_ALBUM_RELEASE_DATE, line)
     # elif (re.match(PATTERN_AWARD_NOMINATED_WORK, line)):

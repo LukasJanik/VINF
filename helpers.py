@@ -1,10 +1,11 @@
 
-from constants import ALBUM, ARTIST, AWARD, RECORDING, TRACK, TRACK_CONTRIBUTION, GENRE, OUTPUT_FILE
+from constants import ALBUM, ARTIST, AWARD, TRACK, TRACK_CONTRIBUTION, GENRE, OUTPUT_DIR
 from parsers import handleArtistParsing, handleAlbumParsing, handleTrackParsing
 import re
 import json
 from json import JSONEncoder
 import jsonpickle
+import os
 
 def ComplexHandler(Obj):
     if hasattr(Obj, 'jsonable'):
@@ -23,9 +24,14 @@ def initializeDict():
     return data
 
 def saveData(data):
-    output_file = open(OUTPUT_FILE, 'w', encoding='utf-8')
+    try:
+        print('Creating output folder')
+        os.mkdir(OUTPUT_DIR)
+    except:
+        print('Folder already exists')
     for key in data:
-        jsonData = jsonpickle.encode(data[key], unpicklable=False)
-        output_file.write(f"{key}:{jsonData}\n")
-    output_file.close()
+        with open(f"./{OUTPUT_DIR}/{key}", 'w') as output_file:
+            for item in data[key]:
+                jsonData = jsonpickle.encode(data[key][item], unpicklable=False)
+                output_file.write(f"{jsonData}\n")
     print ('Data saved')
