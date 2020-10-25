@@ -1,6 +1,6 @@
 
 from constants import ALBUM, ARTIST, AWARD, RECORDING, TRACK, TRACK_CONTRIBUTION, GENRE, OUTPUT_FILE
-from parsers import handleArtistParsing, handleAlbumParsing, handleRecordingParsing
+from parsers import handleArtistParsing, handleAlbumParsing, handleTrackParsing
 import re
 import json
 from json import JSONEncoder
@@ -17,8 +17,7 @@ def initializeDict():
     data[ARTIST] = dict()
     data[TRACK] = dict()
     data[ALBUM] = dict()
-    data[TRACK_CONTRIBUTION] = dict()
-    data[RECORDING] = dict()
+    # data[TRACK_CONTRIBUTION] = dict()
     data[AWARD] = dict()
     data[GENRE] = dict()
     return data

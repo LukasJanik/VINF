@@ -1,5 +1,5 @@
 from patterns import *
-from models import Artist, Track, Album, TrackContribution, Recording, Award, Genre
+from models import Artist, Track, Album, TrackContribution, Award, Genre
 from constants import ALBUM, ARTIST, AWARD, AWARD_INFO_TYPE_AWARD_WON, AWARD_INFO_TYPE_HONOR, TRACK, TRACK_CONTRIBUTION, RECORDING, GENRE, GENRE_MAPPER
 import re
 
@@ -59,9 +59,9 @@ def handleArtistParsing(data, line: str, found_id: int):
     elif (re.match(PATTERN_ARTIST_ALBUM, line)):
         album, data = getOrCreate(data, ALBUM, getObjectId(line))
         _data.albums.append(album)
-    elif (re.match(PATTERN_ARTIST_TRACK_CONTRIBUTION, line)):
-        track_contribution, data = getOrCreate(data, TRACK_CONTRIBUTION, getObjectId(line))
-        _data.track_contributions.append(track_contribution)
+    # elif (re.match(PATTERN_ARTIST_TRACK_CONTRIBUTION, line)):
+    #     track_contribution, data = getOrCreate(data, TRACK_CONTRIBUTION, getObjectId(line))
+    #     _data.track_contributions.append(track_contribution)
     # elif (re.match(PATTERN_ARTIST_AWARD_NOMINATION, line)):
     #     award_nomination, data = getOrCreate(data, AWARD, getObjectId(line))
     #     award_nomination.noaward_honor = AWARD_INFO_TYPE_HONOR
@@ -71,8 +71,8 @@ def handleArtistParsing(data, line: str, found_id: int):
         _data.awards_won.append(award_won)
     return data
 
-def handleRecordingParsing(data, line: str, found_id: int):
-    _data = data[RECORDING][found_id]
+def handleTrackParsing(data, line: str, found_id: int):
+    _data = data[TRACK][found_id]
     if (re.match(PATTERN_OBJECT_NAME, line)):
         _data.name = getName(line)
     if (re.match(PATTERN_OBJECT_DESCRIPTION, line)):
@@ -131,7 +131,7 @@ def handleInitialParsing(data, line):
     if (re.match(PATTERN_ARTIST, line)):
         object_type = ARTIST
     elif (re.match(PATTERN_RECORDING, line)):
-        object_type = RECORDING
+        object_type = TRACK
     elif (re.match(PATTERN_ALBUM, line)):
         object_type = ALBUM
     elif (re.match(PATTERN_GENRE, line)):
@@ -151,8 +151,8 @@ def handleSecondaryParsing(data, line):
             data = handleArtistParsing(data, line, found_id)
         elif (found_id in data[ALBUM]):
             data = handleAlbumParsing(data, line, found_id)
-        elif (found_id in data[RECORDING]):
-            data = handleRecordingParsing(data, line, found_id)
+        elif (found_id in data[TRACK]):
+            data = handleTrackParsing(data, line, found_id)
         elif (re.match(PATTERN_AWARD_HONOR_AWARD_WINNER, line)):
             object_id = getObjectId(line)
             if (object_id in data[ARTIST]):
@@ -171,7 +171,7 @@ def handleTertiaryParsing(data, line):
 
 ENTITY_PARSING_BY_NAME = {
     'artist': handleArtistParsing,
-    'recording': handleRecordingParsing,
+    'track': handleTrackParsing,
     'album': handleAlbumParsing
 }
 
@@ -180,7 +180,7 @@ ENTITY_CREATION_BY_NAME = {
     'track': Track,
     'album': Album,
     'track_contribution': TrackContribution,
-    'recording': Recording,
+    # 'recording': Recording,
     'award': Award,
     'genre': Genre
 }

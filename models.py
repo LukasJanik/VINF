@@ -1,10 +1,3 @@
-class Track:
-    artist: str 
-    tracks: str 
-
-    def __init__(self, id):
-        self.id = id
-
 class TrackContribution:
     contributor: str
     role: str
@@ -13,7 +6,7 @@ class TrackContribution:
     def __init__(self, id):
         self.id = id
 
-class Recording:
+class Track:
                                 # <http://rdf.freebase.com/ns/type.object.type>   <http://rdf.freebase.com/ns/music.recording>
     artists = []                # <http://rdf.freebase.com/ns/music.recording.artist> (v strede), v pravo je potom ID
     tracks = []                 # <http://rdf.freebase.com/ns/music.recording.tracks> (v strede), v pravo je ID pre tracks
