@@ -2,6 +2,7 @@ from os import listdir
 import gzip
 import json
 import re
+import time
 
 from parsers import handleAlbumParsing, handleArtistParsing, handleAwardParsing, handleInitialParsing, handleTrackParsing, handleSecondaryParsing, handleTertiaryParsing
 from constants import STATE, INITIAL_PARSING, SECONDARY_PARSING
@@ -17,7 +18,9 @@ line_counter: int = 0
 
 data = initializeDict()
 
+start_time = time.time()
 for i in range(3):
+    print(f"Pass: {i + 1}")
     f = open(file, "r", encoding="utf8")
     line = f.readline()
     line_counter = 0
@@ -29,9 +32,10 @@ for i in range(3):
         else:
             data = handleTertiaryParsing(data, line)
         line_counter += 1
-        if (line_counter % 100000 == 0):
+        if (line_counter % 1000000 == 0):
             print(line_counter)
         line = f.readline()
     f.close()
 print('the end of parsing')
 saveData(data)
+print("--- %s seconds ---" % (time.time() - start_time))
