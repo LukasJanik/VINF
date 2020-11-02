@@ -2,7 +2,6 @@
 ARTIST = 'artist'
 TRACK = 'track'
 ALBUM = 'album'
-TRACK_CONTRIBUTION = 'track_contribution'
 AWARD = 'award'
 AWARD_HONOR = 'award_honor'
 GENRE = 'genre'
@@ -18,8 +17,3 @@ TERTIARY_PARSING = 'tertiary_parsing'
 STATE = [INITIAL_PARSING, SECONDARY_PARSING, TERTIARY_PARSING]
 
 OUTPUT_DIR = 'output'
-
-GENRE_MAPPER = {
-    "/music/artist/genre": ARTIST,
-    "/music/album/genre": ALBUM
-}

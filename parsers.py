@@ -1,6 +1,6 @@
 from patterns import *
-from models import Artist, Track, Album, TrackContribution, Award, Genre
-from constants import ALBUM, ARTIST, AWARD, AWARD_INFO_TYPE_AWARD_WON, AWARD_INFO_TYPE_HONOR, TRACK, TRACK_CONTRIBUTION, GENRE, GENRE_MAPPER
+from models import Artist, Track, Album, Award, Genre
+from constants import ALBUM, ARTIST, AWARD, AWARD_INFO_TYPE_AWARD_WON, AWARD_INFO_TYPE_HONOR, TRACK, GENRE
 import re
 
 def getSubjectId(input: str):
@@ -20,8 +20,15 @@ def getOrCreate(data: dict, entity: str, id: int):
         entity_instance = data[entity][id]
     return entity_instance, data
 
+def handleCommon(data, line):
+    if (match:=re.match(PATTERN_OBJECT_NAME, line)):
+        data.name = match.group('name')
+    elif (match:=re.match(PATTERN_OBJECT_DESCRIPTION, line)):
+        data.description = match.group('description')  
+
 def handleArtistParsing(data, line: str, found_id: int):
     _data = data[ARTIST][found_id]
+    handleCommon(_data, line)
     if (match:=re.match(PATTERN_ARTIST_PEOPLE_PERSON_DATE_OF_BIRTH, line)):
         _data.date_of_birth = match.group('date')
     elif (match:=re.match(PATTERN_ARTIST_ACTIVE_START, line)):
@@ -32,20 +39,13 @@ def handleArtistParsing(data, line: str, found_id: int):
         _data.origin = match.group('object_id')
     elif (match:=re.match(PATTERN_ARTIST_GENRE, line)):
         genre, data = getOrCreate(data, GENRE, match.group('object_id'))
-        _data.genre = genre.id
-    elif (match:=re.match(PATTERN_OBJECT_NAME, line)):
-        _data.name = match.group('name')
-    elif (match:=re.match(PATTERN_OBJECT_DESCRIPTION, line)):
-        _data.description = match.group('description')        
+        _data.genre = genre.id  
     elif (match:=re.match(PATTERN_ARTIST_TRACK, line)):
         track, data = getOrCreate(data, TRACK, match.group('object_id'))
         _data.tracks.append(track.id)
     elif (match:=re.match(PATTERN_ARTIST_ALBUM, line)):
         album, data = getOrCreate(data, ALBUM, match.group('object_id'))
         _data.albums.append(album.id)
-    # elif (re.match(PATTERN_ARTIST_TRACK_CONTRIBUTION, line)):
-    #     track_contribution, data = getOrCreate(data, TRACK_CONTRIBUTION, getObjectId(line))
-    #     _data.track_contributions.append(track_contribution)
     # elif (re.match(PATTERN_ARTIST_AWARD_NOMINATION, line)):
     #     award_nomination, data = getOrCreate(data, AWARD, getObjectId(line))
     #     award_nomination.noaward_honor = AWARD_INFO_TYPE_HONOR
@@ -57,50 +57,33 @@ def handleArtistParsing(data, line: str, found_id: int):
 
 def handleTrackParsing(data, line: str, found_id: int):
     _data = data[TRACK][found_id]
-    if (match:=re.match(PATTERN_OBJECT_NAME, line)):
-        _data.name = match.group('name')
-    if (match:=re.match(PATTERN_OBJECT_DESCRIPTION, line)):
-        _data.description = match.group('description')        
-    elif (match:=re.match(PATTERN_RECORDING_ARTIST, line)):
+    handleCommon(_data, line)       
+    if (match:=re.match(PATTERN_RECORDING_ARTIST, line)):
         artist, data = getOrCreate(data, ARTIST, match.group('object_id'))
         # artist.tracks.append(_data)
         _data.artists.append(artist.id)
     elif (match:=re.match(PATTERN_RECORDING_LENGTH, line)):
         _data.length = match.group('length')
-    # elif (re.match(PATTERN_AWARD_NOMINATED_WORK, line)):
-    #     award_nominated_work, data = getOrCreate(data, AWARD, getObjectId(line))
-    #     award_nominated_work.nomination_type = NOMINATION_TYPE_WORK
-    #     _data.awards_nominated.append(award_nominated_work)
     return data
 
 def handleAlbumParsing(data, line: str, found_id: int):
     _data = data[ALBUM][found_id]
-    if (match:=re.match(PATTERN_OBJECT_NAME, line)):
-        _data.name = match.group('name')
-    elif (match:=re.match(PATTERN_OBJECT_DESCRIPTION, line)):
-        _data.description = match.group('description')
-    elif (match:=re.match(PATTERN_ALBUM_ARTIST, line)):
+    handleCommon(_data, line)
+    if (match:=re.match(PATTERN_ALBUM_ARTIST, line)):
         artist, data = getOrCreate(data, ARTIST, match.group('object_id'))
         artist.albums.append(found_id)
         _data.artists.append(artist.id)
     elif (match:=re.match(PATTERN_ALBUM_RELEASE_DATE, line)):
-        _data.release_date = match.group('date')
-    # elif (re.match(PATTERN_AWARD_NOMINATED_WORK, line)):
-    #     award_nominated_work, data = getOrCreate(data, AWARD, getObjectId(line))
-    #     award_nominated_work.nomination_type = NOMINATION_TYPE_WORK
-    #     _data.awards_nominated.append(award_nominated_work)        
+        _data.release_date = match.group('date')    
     return data
 
 def handleAwardParsing(data, line: str, found_id: int):
     _data = data[AWARD][found_id]
+    handleCommon(_data, line)
     if(match:=re.match(PATTERN_AWARD_HONOR_AWARD, line)):
         award_honor_award, data = getOrCreate(data, AWARD, match.group('object_id'))
         award_honor_award.object_type = AWARD_INFO_TYPE_HONOR
         _data.detail_object = award_honor_award
-    elif(match:=re.match(PATTERN_OBJECT_NAME, line)):
-        _data.name = match.group('name')
-    elif(match:=re.match(PATTERN_OBJECT_DESCRIPTION, line)):
-        _data.description = match.group('description')
     return data
 
 def handleGenreParsing(data, line:str, found_id: int):
@@ -163,7 +146,6 @@ ENTITY_CREATION_BY_NAME = {
     'artist': Artist,
     'track': Track,
     'album': Album,
-    'track_contribution': TrackContribution,
     'award': Award,
     'genre': Genre
 }

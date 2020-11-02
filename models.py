@@ -1,11 +1,3 @@
-class TrackContribution:
-    contributor: str
-    role: str
-    track: str
-
-    def __init__(self, id):
-        self.id = id
-
 class Track:
                                 # <http://rdf.freebase.com/ns/type.object.type>   <http://rdf.freebase.com/ns/music.recording>
     artists = []                # <http://rdf.freebase.com/ns/music.recording.artist> (v strede), v pravo je potom ID
@@ -22,19 +14,11 @@ class Track:
         self.awards_won = []
         self.awards_nominated = []
     
-class ReleaseTrack:
-    track_number: int           # <http://rdf.freebase.com/ns/music.release_track.track_number> (v strede), vpravo je potom value
-    disc_number: int            # <http://rdf.freebase.com/ns/music.release_track.disc_number> (v strede), vpravo je potom value
-    release: str                # <http://rdf.freebase.com/ns/music.release_track.release> (v strede), vpravo je potom ID
-    recording: str              # <http://rdf.freebase.com/ns/music.release_track.recording> (v strede), vpravo je potom ID
-
-    def __init__(self, id):
-        self.id = id
-
 class Album:
     artists = []                # <http://rdf.freebase.com/ns/g.112yfy2xr>        <http://rdf.freebase.com/ns/music.album.artist> <http://rdf.freebase.com/ns/m.0nb89sw>
     release_date: str           # <http://rdf.freebase.com/ns/g.112yfy2xr>        <http://rdf.freebase.com/ns/music.album.release_date>   "2009"^^<http://www.w3.org/2001/XMLSchema#gYear>
     description: str            # <http://rdf.freebase.com/ns/g.112yfy2xr>        <http://rdf.freebase.com/ns/common.topic.description>   "Guilty Pleasures Love is a solo album from Scott Murphy."@en
+    name: str
     release_type: str           # '<http://rdf.freebase.com/ns/g.112yfy2xr>       <http://rdf.freebase.com/ns/music.album.release_type>\t<http://rdf.freebase.com/ns/m.02lx2r>\t.\n'
     awards_nominated = []
 
@@ -42,6 +26,8 @@ class Album:
         self.id = id
         self.artists = []
         self.awards_nominated = []
+        self.name = None
+        self.description = None
 
 class Artist:
                                 # <http://rdf.freebase.com/ns/type.object.type>   <http://rdf.freebase.com/ns/music.artist>
@@ -70,6 +56,8 @@ class Artist:
         self.award_nominations = []
         self.music_group_members = []
         self.awards_won = []
+        self.name = None
+        self.description = None
 
 class Award:
     id: int
