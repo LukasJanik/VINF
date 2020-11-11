@@ -11,8 +11,8 @@ current_count = 0
 word = None
 
 id = None
+entity_type = None
 curr_id = None
-curr_data = None
 
 # input comes from STDIN
 for line in sys.stdin:
@@ -20,20 +20,15 @@ for line in sys.stdin:
     line = line.strip()
 
     if (id == None):
-        id, data = line.split('\t', 1)
-        data = jsonpickle.decode(data)
+        id, entity_type = line.split('\t', 1)
 
-    curr_id, curr_data = line.split('\t', 1)
-    curr_data = jsonpickle.decode(curr_data)
+    curr_id, curr_entity_type = line.split('\t', 1)
 
-    if curr_id == id:
-        for (key, value) in curr_data.items():
-            data[key] = curr_data[key] if curr_data[key] != None else data[key]
-    else:
+    if curr_id != id:
+        print(str(id) + "\t" + str(entity_type))
         id = curr_id
-        data = curr_data
-        print(str(id) + "\t" + str(jsonpickle.encode(data, unpicklable=False)))
+        entity_type = curr_entity_type
     
 if curr_id == id:
-    print(str(id) + "\t" + str(jsonpickle.encode(data, unpicklable=False)))
+    print(str(id) + "\t" + str(entity_type))
     

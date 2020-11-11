@@ -6,104 +6,6 @@ import re
 import jsonpickle
 import json
 
-# from patterns import *
-# from constants import *
-# from models import *
-
-class Track:
-    id = None
-    name = ''
-    description = ''
-    artists = []
-    tracks = []               
-    length = None             
-    awards_won = []       
-    awards_nominated = []
-
-    entity_type = ''
-
-    def __init__(self, id):
-        self.id = id
-        self.name = None
-        self.description = None
-        self.artists = []
-        self.tracks = []
-        self.length = None
-
-        self.awards_won = []
-        self.awards_nominated = []
-
-        self.entity_type = TRACK
-    
-class Album:
-    id = None
-    name = None
-    description = None            
-
-    artists = []                
-    release_date = None           
-    release_type = None           
-    awards_nominated = []
-    entity_type = None
-
-    def __init__(self, id):
-        self.id = id
-        self.name = None
-        self.description = None
-
-        self.artists = []
-        self.awards_nominated = []
-
-        self.entity_type = ALBUM
-
-class Artist:
-    id = None
-    name = None                   
-    description = None
-    active_start = None           
-    active_end = None             
-    origin = None                 
-    genre = None                  
-    date_of_birth = None          
-
-    tracks = []                  
-    albums = []                  
-    # track_contributions = []     
-    # award_nominations = []       
-    awards_won = []              
-
-    entity_type = None
-
-    def __init__(self, id):
-        self.id = id
-        self.name = None
-        self.description = None
-        self.active_start = None
-        self.active_end = None
-        self.origin = None
-        self.genre = None
-        self.date_of_birth = None
-        
-        self.tracks = []
-        self.albums = []
-        # self.track_contributions = []
-        # self.award_nominations = []
-        # self.music_group_members = []
-        self.awards_won = []
-
-        self.entity_type = ARTIST
-   
-class Genre:
-    id = None
-    name = None                   
-    genre_type = None             
-    entity_type = None
-    def __init__(self, id):
-        self.id = id
-        self.name = None 
-        self.genre_type = None 
-        self.entity_type = GENRE
-
 PATTERN_RETRIEVE_SUBJECT_ID = r'(?<=\<http:\/\/rdf\.freebase\.com\/ns\/)([a-z]\.[a-z0-9_]+)\>\t\<'
 PATTERN_RETRIEVE_OBJECT_ID = r'(?<!not )(?<=\t\<http:\/\/rdf\.freebase\.com\/ns\/)[a-z]\.[a-z0-9_]+'
 
@@ -115,22 +17,14 @@ PATTERN_GENRE = r'\<.*\>\t+\<http:\/\/rdf\.freebase\.com\/ns\/common\.notable_fo
 
 sys.path.append('.')
 
-
-ENTITY_CREATION_BY_NAME = {
-    'artist': Artist,
-    'track': Track,
-    'album': Album,
-    'genre': Genre
-}
-
 ARTIST = 'artist'
 TRACK = 'track'
 ALBUM = 'album'
 GENRE = 'genre'
 
-def getObjectId(input):
-    result = re.search(PATTERN_RETRIEVE_OBJECT_ID, input)
-    return None if result == None else result.group(0) 
+def getSubjectId(input):
+    result = re.search(PATTERN_RETRIEVE_SUBJECT_ID, input)
+    return None if result == None else result.group(1) 
 
 data = set()
 
@@ -147,11 +41,10 @@ for line in sys.stdin:
         object_type = GENRE
 
     if (object_type != None):    
-        id = getObjectId(line)
+        id = getSubjectId(line)
         if (id not in data):
-            entity_instance = ENTITY_CREATION_BY_NAME[object_type](id)
             data.add(id)
-            if (object_type == GENRE):
-                entity_instance.genre_type = re.match(PATTERN_GENRE, line).group('type')
-            jsonData = jsonpickle.encode(entity_instance, unpicklable=False)
-            print(str(id) + "\t" + str(jsonData))
+            # TODO toto treba doriesit
+            # if (object_type == GENRE):
+                # entity_instance.genre_type = re.match(PATTERN_GENRE, line).group('type')
+            print(str(id) + "\t" + str(object_type))
