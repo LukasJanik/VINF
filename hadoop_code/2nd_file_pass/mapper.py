@@ -199,25 +199,19 @@ def handleArtistParsing(data, line, found_id):
         _data.origin = match.group('object_id')
     elif (re.match(PATTERN_ARTIST_GENRE, line)):
         match = re.match(PATTERN_ARTIST_GENRE, line)
-        # genre, data = getOrCreate(data, GENRE, match.group('object_id'))
-        # _data.genre = genre.id  
         _data.genre = match.group('object_id')
     elif (re.match(PATTERN_ARTIST_TRACK, line)):
         match = re.match(PATTERN_ARTIST_TRACK, line)
-        # track, data = getOrCreate(data, TRACK, match.group('object_id'))
-        # _data.tracks.append(track.id)
         _data.tracks.append(match.group('object_id'))
     elif (re.match(PATTERN_ARTIST_ALBUM, line)):
         match = re.match(PATTERN_ARTIST_ALBUM, line)
-        # album, data = getOrCreate(data, ALBUM, match.group('object_id'))
-        # _data.albums.append(album.id)
         _data.albums.append(match.group('object_id'))
-    # elif (re.match(PATTERN_ARTIST_AWARD_NOMINATION, line)):
-    #     award_nomination, data = getOrCreate(data, AWARD, getObjectId(line))
-    #     award_nomination.noaward_honor = AWARD_INFO_TYPE_HONOR
     elif (re.match(PATTERN_ARTIST_AWARDS_WON, line)):
-        award_won, data = getOrCreate(data, AWARD, match.group('object_id'))
+        match = re.match(PATTERN_ARTIST_AWARDS_WON, line)
+        object_id = match.group('object_id')
+        award_won, data = getOrCreate(data, AWARD, object_id)
         award_won.object_type = AWARD_INFO_TYPE_AWARD_WON
+        printObject(object_id, award_won)
         _data.awards_won.append(award_won.id)
     return data
 
@@ -246,13 +240,14 @@ def handleAlbumParsing(data, line, found_id):
 
 def handleGenreParsing(data, line, found_id):
     _data = data[found_id]
+    if (re.match(PATTERN_GENRE, line)):
+        _data.genre_type = re.match(PATTERN_GENRE, line).group('type')
     if (re.match(PATTERN_GENRE_NAME, line)):
         match = re.match(PATTERN_GENRE_NAME, line)
         _data.name = match.group('name')
     if (re.match(PATTERN_GENRE, line)):
         _data.genre_type = re.match(PATTERN_GENRE, line).group('type')
     return data
-
 
 ENTITY_PARSING_BY_NAME = {
     'artist': handleArtistParsing,
@@ -275,7 +270,8 @@ def printObject(id, _object):
 def readIdsAndTypes(fileName):
     onlyIdsAndTypes = dict()
     # f = open('./2nd_file_pass/' + fileName, "r", encoding="utf8")
-    f = open(fileName, "r", encoding="utf8")
+    # f = open(fileName, "r", encoding="utf8")
+    f = open(fileName, "r")
     line = f.readline()
     while line != '':
         curr_id, curr_entity_type = line.rstrip().split('\t', 1)
@@ -284,7 +280,8 @@ def readIdsAndTypes(fileName):
     f.close()
     return onlyIdsAndTypes
 
-fileName = 'file.txt'
+# fileName = 'file.txt'
+fileName = 'input_100M'
 data = dict()
 onlyIdsAndTypes = readIdsAndTypes(fileName)
 
@@ -303,11 +300,14 @@ for line in sys.stdin:
             data = handleAlbumParsing(data, line, found_id)
         elif (entity_type == TRACK):
             data = handleTrackParsing(data, line, found_id)
+        elif (entity_type == GENRE):
+            data = handleGenreParsing(data, line, found_id)
         elif (re.match(PATTERN_AWARD_HONOR_AWARD_WINNER, line)):
             object_id = getObjectId(line)
-            if (object_id in onlyIdsAndTypes and onlyIdsAndTypes[object_id] == ARTIST):
+            if (object_id in onlyIdsAndTypes and onlyIdsAndTypes[object_id] == ARTIST): 
                 award, data = getOrCreate(data, AWARD, found_id)
-                data[found_id].awards_won.append(object_id)
+                data[object_id].awards_won.append(found_id)
+                printObject(found_id, award)
                 # data[object_id].awards_won.append(entity_instance.id)
         if (previous_id == None or (previous_id != None and previous_id != found_id)):
             if (previous_id != None):
