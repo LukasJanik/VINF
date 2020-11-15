@@ -16,6 +16,7 @@ PATTERN_GENRE = r'\<.*\>\t+\<http:\/\/rdf\.freebase\.com\/ns\/common\.notable_fo
 
 PATTERN_ALBUM_ARTIST = r'\<.*\>\t+\<http:\/\/rdf\.freebase\.com\/ns\/music\.album\.artist\>\t+\<.*\/(?P<object_id>[gm].*)\>'
 PATTERN_RECORDING_ARTIST = r'\<.*\>\t+\<http:\/\/rdf\.freebase\.com\/ns\/music\.recording\.artist\>\t+\<.*\/(?P<object_id>[gm].*)\>'
+PATTERN_ARTIST_AWARDS_WON = r'\<.*\>\t+\<http:\/\/rdf\.freebase\.com\/ns\/award\.award_winner\.awards_won\>\t+\<.*\/(?P<object_id>[gm].*)\>'
 
 sys.path.append('.')
 
@@ -23,6 +24,7 @@ ARTIST = 'artist'
 TRACK = 'track'
 ALBUM = 'album'
 GENRE = 'genre'
+AWARD_HONOR = 'award_honor'
 
 def getSubjectId(input):
     result = re.search(PATTERN_RETRIEVE_SUBJECT_ID, input)
@@ -34,15 +36,26 @@ def getObjectId(input):
 
 data = set()
 
+last_award_honor = []
+
 for line in sys.stdin:
     object_type = None
-    id = None
     
     if (re.match(PATTERN_ARTIST, line)):
         object_type = ARTIST
-    elif (re.match(PATTERN_RECORDING_ARTIST, line) or re.match(PATTERN_ALBUM_ARTIST, line)):
-        object_type = ARTIST
-        id = getObjectId(line)
+        if (len(last_award_honor) > 0 and last_award_honor[0] == getSubjectId(line)):
+            data.add(last_award_honor[1])
+            print(str(last_award_honor[1]) + "\t" + str(AWARD_HONOR))            
+        else:
+            last_award_honor = []
+    elif (re.match(PATTERN_ARTIST_AWARDS_WON, line)):
+        subject_id = getSubjectId(line)
+        object_id = getObjectId(line)
+        if subject_id in data and object_id not in data:
+            data.add(object_id)
+            print(str(object_id) + "\t" + str(AWARD_HONOR))
+        else:
+            last_award_honor = [getSubjectId(line), getObjectId(line)]
     elif (re.match(PATTERN_RECORDING, line)):
         object_type = TRACK
     elif (re.match(PATTERN_ALBUM, line)):
@@ -51,10 +64,7 @@ for line in sys.stdin:
         object_type = GENRE
 
     if (object_type != None):    
-        id = getSubjectId(line) if id == None else id
+        id = getSubjectId(line)
         if (id not in data):
             data.add(id)
-            # TODO toto treba doriesit
-            # if (object_type == GENRE):
-                # entity_instance.genre_type = re.match(PATTERN_GENRE, line).group('type')
             print(str(id) + "\t" + str(object_type))

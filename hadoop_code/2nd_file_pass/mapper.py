@@ -13,7 +13,7 @@ TRACK = 'track'
 ALBUM = 'album'
 GENRE = 'genre'
 AWARD = 'award'
-AWARD_INFO_TYPE_AWARD_WON = 'award_won'
+AWARD_HONOR = 'award_honor'
 
 
 # ARTIST
@@ -112,8 +112,7 @@ class Award:
     id = None
     name = None
     description = None
-    object_type = None
-    detail_object = None
+    detail_reference = None
 
     entity_type = None
 
@@ -121,10 +120,9 @@ class Award:
         self.id = id
         self.name = None
         self.description = None
-        self.object_type = None
-        self.detail_object = None
+        self.detail_reference = None
         
-        self.entity_type = AWARD
+        self.entity_type = AWARD_HONOR
     
 class Genre:
     id = None
@@ -209,10 +207,10 @@ def handleArtistParsing(data, line, found_id):
     elif (re.match(PATTERN_ARTIST_AWARDS_WON, line)):
         match = re.match(PATTERN_ARTIST_AWARDS_WON, line)
         object_id = match.group('object_id')
-        award_won, data = getOrCreate(data, AWARD, object_id)
-        award_won.object_type = AWARD_INFO_TYPE_AWARD_WON
-        printObject(object_id, award_won)
-        _data.awards_won.append(award_won.id)
+        # award_won, data = getOrCreate(data, AWARD, object_id)
+        # award_won.object_type = AWARD_INFO_TYPE_AWARD_WON
+        # printObject(object_id, award_won)
+        _data.awards_won.append(object_id)
     return data
 
 def handleTrackParsing(data, line, found_id):
@@ -249,6 +247,14 @@ def handleGenreParsing(data, line, found_id):
         _data.genre_type = re.match(PATTERN_GENRE, line).group('type')
     return data
 
+def handleAwardParsing(data, line, found_id):
+    _data = data[found_id]
+    _data = handleCommon(_data, line)
+    if(re.match(PATTERN_AWARD_HONOR_AWARD, line)):
+        object_id = re.match(PATTERN_AWARD_HONOR_AWARD, line).group('object_id')
+        _data.detail_reference = object_id
+    return data
+
 ENTITY_PARSING_BY_NAME = {
     'artist': handleArtistParsing,
     'track': handleTrackParsing,
@@ -259,7 +265,7 @@ ENTITY_CREATION_BY_NAME = {
     'artist': Artist,
     'track': Track,
     'album': Album,
-    'award': Award,
+    'award_honor': Award,
     'genre': Genre
 }
 
@@ -280,8 +286,7 @@ def readIdsAndTypes(fileName):
     f.close()
     return onlyIdsAndTypes
 
-# fileName = 'file.txt'
-fileName = 'input_100M'
+fileName = 'input'
 data = dict()
 onlyIdsAndTypes = readIdsAndTypes(fileName)
 
@@ -293,7 +298,6 @@ for line in sys.stdin:
         entity_type = onlyIdsAndTypes[found_id]
         if found_id not in data:
             entity, data = getOrCreate(data, entity_type, found_id)
-
         if (entity_type == ARTIST):
             data = handleArtistParsing(data, line, found_id)
         elif (entity_type == ALBUM):
@@ -302,14 +306,22 @@ for line in sys.stdin:
             data = handleTrackParsing(data, line, found_id)
         elif (entity_type == GENRE):
             data = handleGenreParsing(data, line, found_id)
-        elif (re.match(PATTERN_AWARD_HONOR_AWARD_WINNER, line)):
-            object_id = getObjectId(line)
-            if (object_id in onlyIdsAndTypes and onlyIdsAndTypes[object_id] == ARTIST): 
-                award, data = getOrCreate(data, AWARD, found_id)
-                data[object_id].awards_won.append(found_id)
-                printObject(found_id, award)
+        # elif (re.match(PATTERN_AWARD_HONOR_AWARD_WINNER, line)):
+        #     object_id = getObjectId(line)
+        #     if (object_id in onlyIdsAndTypes and onlyIdsAndTypes[object_id] == ARTIST): 
+        #         award, data = getOrCreate(data, AWARD, found_id)
+        #         data[object_id].awards_won.append(found_id)
+        #         printObject(object_id, data[object_id])
+        #         printObject(found_id, award)
                 # data[object_id].awards_won.append(entity_instance.id)
+        elif (entity_type == AWARD_HONOR):
+            data = handleAwardParsing(data, line, found_id)
         if (previous_id == None or (previous_id != None and previous_id != found_id)):
             if (previous_id != None):
                 printObject(previous_id, data[previous_id])
-            previous_id = found_id
+                previous_id = None
+            else:
+                previous_id = found_id
+
+if (previous_id != None):
+    printObject(previous_id, data[previous_id]) 

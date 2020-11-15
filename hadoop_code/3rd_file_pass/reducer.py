@@ -20,21 +20,21 @@ curr_data = None
 for line in sys.stdin:
     # remove leading and trailing whitespace
     line = line.strip()
+    if (line != ''):
+        if (id == None):
+            id, data = line.split('\t', 1)
+            data = jsonpickle.decode(data)
 
-    if (id == None):
-        id, data = line.split('\t', 1)
-        data = jsonpickle.decode(data)
+        curr_id, curr_data = line.split('\t', 1)
+        curr_data = jsonpickle.decode(curr_data)
 
-    curr_id, curr_data = line.split('\t', 1)
-    curr_data = jsonpickle.decode(curr_data)
-
-    if curr_id == id:
-        for (key, value) in curr_data.items():
-            data[key] = curr_data[key] if curr_data[key] != None else data[key]
-    else:
-        print(str(id) + "\t" + str(jsonpickle.encode(data, unpicklable=False)))
-        id = curr_id
-        data = curr_data
+        if curr_id == id:
+            for (key, value) in curr_data.items():
+                data[key] = curr_data[key] if curr_data[key] != None else data[key]
+        else:
+            print(str(id) + "\t" + str(jsonpickle.encode(data, unpicklable=False)))
+            id = curr_id
+            data = curr_data
     
 if curr_id == id:
     print(str(id) + "\t" + str(jsonpickle.encode(data, unpicklable=False)))

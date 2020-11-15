@@ -13,10 +13,9 @@ word = None
 id = None
 entity_type = None
 curr_id = None
-
+line_count = 0
 # input comes from STDIN
 for line in sys.stdin:
-    # remove leading and trailing whitespace
     line = line.strip()
 
     if (id == None):
@@ -31,4 +30,3 @@ for line in sys.stdin:
     
 if curr_id == id:
     print(str(id) + "\t" + str(entity_type))
-    
