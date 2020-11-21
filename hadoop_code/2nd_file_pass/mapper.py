@@ -291,9 +291,11 @@ data = dict()
 onlyIdsAndTypes = readIdsAndTypes(fileName)
 
 previous_id = None
+line_count = 0
 
 for line in sys.stdin:
     found_id = getSubjectId(line)
+    line_count+= 1
     if (found_id != None and found_id in onlyIdsAndTypes):
         entity_type = onlyIdsAndTypes[found_id]
         if found_id not in data:
@@ -316,6 +318,10 @@ for line in sys.stdin:
                 # data[object_id].awards_won.append(entity_instance.id)
         elif (entity_type == AWARD_HONOR):
             data = handleAwardParsing(data, line, found_id)
+
+        if (line_count % 100000 == 0):
+            print('')
+        
         if (previous_id == None or (previous_id != None and previous_id != found_id)):
             if (previous_id != None):
                 printObject(previous_id, data[previous_id])

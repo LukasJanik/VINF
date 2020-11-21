@@ -17,16 +17,16 @@ line_count = 0
 # input comes from STDIN
 for line in sys.stdin:
     line = line.strip()
+    if (line != ''):
+        if (id == None):
+            id, entity_type = line.split('\t', 1)
 
-    if (id == None):
-        id, entity_type = line.split('\t', 1)
+        curr_id, curr_entity_type = line.split('\t', 1)
 
-    curr_id, curr_entity_type = line.split('\t', 1)
-
-    if curr_id != id:
-        print(str(id) + "\t" + str(entity_type))
-        id = curr_id
-        entity_type = curr_entity_type
+        if curr_id != id:
+            print(str(id) + "\t" + str(entity_type))
+            id = curr_id
+            entity_type = curr_entity_type
     
 if curr_id == id:
     print(str(id) + "\t" + str(entity_type))

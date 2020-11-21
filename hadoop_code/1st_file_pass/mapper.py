@@ -37,10 +37,12 @@ def getObjectId(input):
 data = set()
 
 last_award_honor = []
+line_count = 0
 
 for line in sys.stdin:
     object_type = None
-    
+    line_count+= 1
+
     if (re.match(PATTERN_ARTIST, line)):
         object_type = ARTIST
         if (len(last_award_honor) > 0 and last_award_honor[0] == getSubjectId(line)):
@@ -62,6 +64,9 @@ for line in sys.stdin:
         object_type = ALBUM
     elif (re.match(PATTERN_GENRE, line)):
         object_type = GENRE
+
+    if (line_count % 100000 == 0):
+        print('')
 
     if (object_type != None):    
         id = getSubjectId(line)

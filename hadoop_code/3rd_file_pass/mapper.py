@@ -76,7 +76,7 @@ for line in sys.stdin:
                     previous_id = None
             else:        
                 previous_id = found_id
-    if (line_count % 10000 == 0):
+    if (line_count % 100000 == 0):
         print('')
 if (previous_id != None):
     printObject(data[previous_id]['id'], data[previous_id])
