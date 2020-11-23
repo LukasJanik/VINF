@@ -1,0 +1,95 @@
+{
+	"properties": {
+		"artist": {
+			"properties": {
+				"id": {
+					"type": "text"
+				},
+				"name": {
+					"type": "text",
+					"fields": {
+						"keyword": {
+							"type": "keyword",
+							"ignore_above": 200
+						}
+					}
+				},
+				"description": {
+					"type": "text"
+				},
+				"active_start": {
+					"type": "text"
+				},
+				"active_end": {
+					"type": "text"
+				},
+				"date_of_birth": {
+					"type": "text"
+				},
+				"albums": {
+					"properties": {
+						"id": {
+							"type": "text"
+						},
+						"name": {
+							"type": "text",
+							"fields": {
+								"keyword": {
+									"type": "keyword",
+									"ignore_above": 200
+								}
+							}
+						},
+						"description": {
+							"type": "text"
+						},
+						"release_date": {
+							"type": "text"
+						}
+					}
+				},
+				"tracks": {
+					"properties": {
+						"id": {
+							"type": "text"
+						},
+						"name": {
+							"type": "text",
+							"fields": {
+								"keyword": {
+									"type": "keyword",
+									"ignore_above": 200
+								}
+							}
+						},
+						"description": {
+							"type": "text"
+						},
+						"length": {
+							"type": "long"
+						}
+					}
+				},
+				"awards": {
+					"properties": {
+						"id": {
+							"type": "text"
+						},
+						"name": {
+							"type": "text",
+							"fields": {
+								"keyword": {
+									"type": "keyword",
+									"ignore_above": 200
+								}
+							}
+						},
+						"description": {
+							"type": "text"
+						}
+					}
+				}
+			}
+		}
+	}
+}
