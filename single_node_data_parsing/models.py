@@ -1,3 +1,5 @@
+from constants import *
+
 class Track:
                                 # <http://rdf.freebase.com/ns/type.object.type>   <http://rdf.freebase.com/ns/music.recording>
     artists = []                # <http://rdf.freebase.com/ns/music.recording.artist> (v strede), v pravo je potom ID
@@ -6,9 +8,11 @@ class Track:
     awards_won = []             # <http://rdf.freebase.com/ns/m.014brgq>  <http://rdf.freebase.com/ns/award.award_winning_work.awards_won>        <http://rdf.freebase.com/ns/m.0jzl1zk>
     awards_nominated = []       # <http://rdf.freebase.com/ns/m.014brgq>  <http://rdf.freebase.com/ns/award.award_nominated_work.award_nominations>      <http://rdf.freebase.com/ns/m.0k0c_tx>
     description: str
+    entity_type: str
 
     def __init__(self, id):
         self.id = id
+        self.entity_type = TRACK
         self.artists = []
         self.tracks = []
         self.awards_won = []
@@ -21,9 +25,11 @@ class Album:
     name: str
     release_type: str           # '<http://rdf.freebase.com/ns/g.112yfy2xr>       <http://rdf.freebase.com/ns/music.album.release_type>\t<http://rdf.freebase.com/ns/m.02lx2r>\t.\n'
     awards_nominated = []
+    entity_type: str
 
     def __init__(self, id):
         self.id = id
+        self.entity_type = ALBUM
         self.artists = []
         self.awards_nominated = []
         self.name = None
@@ -48,6 +54,8 @@ class Artist:
     award_nominations: []       #<http://rdf.freebase.com/ns/g.11b6dv1czb>       <http://rdf.freebase.com/ns/award.award_nominee.award_nominations>     <http://rdf.freebase.com/ns/m.0_q_xky>
     awards_won: []              # <http://rdf.freebase.com/ns/m.029dy9>	<http://rdf.freebase.com/ns/award.award_winner.awards_won>	<http://rdf.freebase.com/ns/m.0_r27zk>	.
 
+    entity_type: str
+
     def __init__(self, id):
         self.id = id
         self.tracks = []
@@ -58,6 +66,7 @@ class Artist:
         self.awards_won = []
         self.name = None
         self.description = None
+        self.entity_type = ARTIST
 
 class Award:
     id: int
@@ -66,19 +75,23 @@ class Award:
     object_type: str
     detail_object: any
 
+    entity_type: str
+
     def __init__(self, id: int):
         self.id = id
         self.object_type = ''
         self.name = None
         self.description = None
         self.detail_object = None
+        self.entity_type = AWARD
     
 class Genre:
     id: int
     name: str                   # <http://rdf.freebase.com/ns/g.11b60s26zc>       <http://rdf.freebase.com/ns/common.notable_for.display_name>    "K-pop Artist"@en
     genre_type: str             # <http://rdf.freebase.com/ns/g.11b60s26zc>       <http://rdf.freebase.com/ns/common.notable_for.predicate>       "/music/artist/genre"
-    
+    entity_type: str
     def __init__(self, id):
         self.id = id
         self.name = None 
         self.genre_type = None 
+        self.entity_type = GENRE

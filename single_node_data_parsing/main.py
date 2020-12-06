@@ -9,7 +9,7 @@ from constants import STATE, INITIAL_PARSING, SECONDARY_PARSING
 from helpers import initializeDict, saveData
 
 # file = 'freebase-head-1000000'
-file = 'freebase-head-100000000'
+file = '../freebase-head-100000000'
 
 f = open(file, "r", encoding="utf8")
 line = f.readline()
