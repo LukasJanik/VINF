@@ -1,0 +1,138 @@
+{
+    "settings": {
+       "index": {
+          "number_of_shards": 3,
+          "number_of_replicas": 2,
+          "max_ngram_diff": 9
+       },
+       "analysis": {
+            "analyzer": {
+                "custom_processing": {
+                    "type": "custom",
+                    "tokenizer": "ngram_tokenizer",
+                    "filter": [
+                        "asciifolding",
+                        "lowercase",
+                        "stop",
+                        "stemmer"
+                    ]
+                },
+                "custom_search": {
+                    "type": "custom",
+                    "tokenizer": "standard",
+                    "filter": [
+                        "lowercase",
+                        "asciifolding"
+                    ]
+                }
+            },
+            "tokenizer": {
+                "ngram_tokenizer": {
+                    "type": "edge_ngram",
+                    "min_gram": 1,
+                    "max_gram": 10,
+                    "token_chars": [
+                        "letter",
+                        "digit"
+                    ]
+                }
+            }
+    }
+    },
+    "mappings": {
+       "properties": {
+		"artist": {
+			"properties": {
+				"id": {
+					"type": "text"
+				},
+				"name": {
+					"type": "text",
+					"analyzer": "custom_processing",
+					"search_analyzer": "custom_search"
+				},
+				"description": {
+					"type": "text",
+					"analyzer": "custom_processing",
+					"search_analyzer": "custom_search"
+				},
+				"active_start": {
+					"type": "text"
+				},
+				"active_end": {
+					"type": "text"
+				},
+				"date_of_birth": {
+					"type": "text"
+				},
+				"albums": {
+					"properties": {
+						"id": {
+							"type": "text"
+						},
+						"name": {
+							"type": "text",
+							"analyzer": "custom_processing",
+							"search_analyzer": "custom_search"
+						},
+						"description": {
+							"type": "text",
+							"analyzer": "custom_processing",
+							"search_analyzer": "custom_search"							
+						},
+						"release_date": {
+							"type": "text"
+						}
+					}
+				},
+				"no_of_albums": {
+					"type": "long"
+				},
+				"no_of_awards_won": {
+					"type": "long"
+				},
+				"no_of_tracks": {
+					"type": "long"
+				},
+				"tracks": {
+					"properties": {
+						"id": {
+							"type": "text"
+						},
+						"name": {
+							"type": "text",
+							"analyzer": "custom_processing",
+							"search_analyzer": "custom_search"
+						},
+						"description": {
+							"type": "text",
+							"analyzer": "custom_processing",
+							"search_analyzer": "custom_search"							
+						},
+						"length": {
+							"type": "long"
+						}
+					}
+				},
+				"awards": {
+					"properties": {
+						"id": {
+							"type": "text"
+						},
+						"name": {
+							"type": "text",
+							"analyzer": "custom_processing",
+							"search_analyzer": "custom_search"
+						},
+						"description": {
+							"type": "text",
+							"analyzer": "custom_processing",
+							"search_analyzer": "custom_search"
+						}
+					}
+				}
+			}
+		}
+	}
+    }
+ }
