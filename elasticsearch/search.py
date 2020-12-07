@@ -59,32 +59,43 @@ def buildParams(_input: str, _range=False) -> []:
             match['match'][key] = value
             final_params.append(match)
         else:
-            if key in ['active_end', 'active_start', 'date_of_birth', 'release_date']:
-                __range = getDate(key, value)
-                if (__range != None):
-                    final_params.append(__range)
+            date = key in ['active_end', 'active_start', 'date_of_birth', 'release_date']
+            __range = getRange(key, value, date)
+            if (__range != None):
+                final_params.append(__range)
     return final_params
 
-def getDate(_key: str, _date: str) -> dict:
+def getRange(_key: str, _range: str, date = False) -> dict:
     __range = {'range': {}}
+    regex = None 
+    value1 = None
+    value2 = None
+
+    if (date):
+        regex = r'<(?P<value1>[0-9]{4}[-]{0,1}[0-9]{0,2}[-]{0,1}[0-9]{0,2}|NONE), (?P<value2>[0-9]{4}[-]{0,1}[0-9]{0,2}[-]{0,1}[0-9]{0,2}|NONE)>'
+    else:
+        regex = r'<(?P<value1>[0-9]*|NONE), (?P<value2>[0-9]*|NONE)>' 
     match = re.match(
-            r'<(?P<date1>[0-9]{4}[-]{0,1}[0-9]{0,2}[-]{0,1}[0-9]{0,2}|NONE), (?P<date2>[0-9]{4}[-]{0,1}[0-9]{0,2}[-]{0,1}[0-9]{0,2}|NONE)>', 
-            _date,
+            regex, 
+            _range,
             re.IGNORECASE
         )
     if (match == None):
         return None
-    date1 = processDate(match.group('date1'))
-    date2 = processDate(match.group('date2'))
 
-    if (date1 == None and date2 == None):
+    if (match.group('value1') != None and  match.group('value1') != 'NONE'):
+        value1 = processDate(match.group('value1')) if date else match.group('value1')
+    if (match.group('value2') != None and  match.group('value2') != 'NONE'):        
+        value2 = processDate(match.group('value2')) if date else match.group('value2')
+
+    if (value1 == None and value2 == None):
         return None
     else:
         __range['range'][_key] = {}
-        if (date1 != None):
-            __range['range'][_key]['gte'] = date1
-        if (date2 != None):
-            __range['range'][_key]['lte'] = date2
+        if (value1 != None):
+            __range['range'][_key]['gte'] = value1
+        if (value2 != None):
+            __range['range'][_key]['lte'] = value2
 
     return __range 
 
